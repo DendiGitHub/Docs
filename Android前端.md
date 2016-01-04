@@ -5,9 +5,16 @@
 
 >inflate是加载一个布局文件,而findViewById是从布局文件中查找一个控件
 
+	//取得Inflater的方法
     LayoutInflater.from(this);
 	getLayoutInflater();
 	(LayoutInflater)this.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+	//Inflater方法
+	pulic View inflate(int resource,ViewGroup root,boolean attachToRoot){
+		//attachToRoot如果为false，则加载root的layout_width和layout_height组成LayoutParams,赋值给View
+		//attachToRoot如果设置为true,则将View作为子视图添加到root视图
+	}
 
 ### ListView ###
 
@@ -349,3 +356,56 @@ FragmentManager
 	transaction.addToBackStack(null);
 	transaction.commit();
 ![](http://www.myexception.cn/img/2015/03/31/192604226.jpg)
+
+#### Intent和Intent-filter ####
+
+Intent对象大致包含
+
+- Component
+- Action
+- Category
+- Data
+- Type
+- Extra
+- Flag
+>
+
+	Intent intent = new Intent();
+
+	//Component定义显示Intent
+    ComponentName comp = new ComponentName(MainActivity.this,SecondActivity.class);
+	intent.setComponent(comp);
+
+	//Action表示该Intent所要完成的一个抽象动作,只可指定一个
+	intent.setAction(String action);
+
+	//Category制定额外的附加类别信息，可指定多个
+	intent.addCategory(String category);
+
+	//Data属性用于向Action属性提供操作的数据,通常接收一个Uri对象
+	//Uri总满足如下格式: scheme://host:port/path
+	intent.setData(Uri.parse("lee://www.fkjava.org:8888/test"));
+
+	//Type属性用于指定该Data属性所指定Uri对应的MIME类型，这种MIME类型可以是任何自定义的MIME类型
+	//Data和Type会互相覆盖,除非执行setDataAndType方法
+	intent.setType("abc/xyz");
+
+	//Extra属性
+	//通常用于在多个Action之间进行数据交换,是一个Bundle对象
+
+
+	//Flag属性
+	//为该Intent添加一些额外的控制旗标
+	//如:FLAG_ACTIVITY_CLEAR_TOP
+
+
+
+
+
+	//在XML中定义
+	<activity 
+		<intent-filter>
+			<action android:name=""/>
+			<category android:name=""/>
+		<intent-filter>
+	</activity>
