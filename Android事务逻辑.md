@@ -122,3 +122,105 @@ activity中可以添加如下标签
 >可以理解为封装给别人执行或者延迟执行的Intent
 
 
+### 资源文件的使用 ###
+
+	//id的获取
+	//in XML
+	@[<package_name>:]<resource_type>/<resource_name>
+	//in Code
+	@<package_name>.R.<resource_type>.<resource_name>
+
+    Resource res = getResources();
+	res.getString(int id);
+	res.getDeminsion(int id);
+	res.getInteger(int id);
+
+### 动态获取id ###
+
+   	    int ridInt = mContext.getResources().getIdentifier(sb.toString(),
+                "string", mContext.getPackageName());
+        if (ridInt == 0) {
+            resultString = "未定义";
+        } else {
+            resultString = mContext.getString(ridInt);
+        }
+
+
+### 获取版本号 ###
+
+    PackageManager manager = this.getPackageManager();
+	PackageInfo info = manager.getPackageInfo(this.getPackageName(),0);
+	String version = info.versionName;
+
+### StateListDrawable ###
+>stateListDrawable用于组织多个Drawable对象,当使用StateListDrawable作为目标组件的背景、前景图片时,StateListDrawable对象所显示的Drawable对象会随目标组件状态的改变而自动切换
+
+- android:color或android:drawable:指定颜色或Drawable对象
+- android:state_XXX指定特定状态
+	- state_checked	
+	- state_enabled
+	- state_pressed
+	- and so on
+
+### ClipDrawable ###
+
+    <?xml versoin = "1.0" encoding="utf-8"?>
+	<clip xmlns:android="http://schemas.android.com/apk/res/android"
+		android:drawab;e="@drawable/drawable_resource"
+		android:clipOrientation=["horizontal" | "vertical"]
+		android:gravity=["top" | "center" | ...]
+	/>
+
+	ClipDrawable drawable = (ClipDrawable) imageview.getDrawable();
+	drawable.setLevel(0~10000);
+
+### AnimationDrawable ###
+    
+	<set xmlns:android
+		android:interpolator="@android:anim/linear_interpolator"
+		android:duration="5000">
+		<alpha
+			android:fromAlpha = ""
+			android:toAlpha = ""
+		/>
+		<scale
+			android:from[X|Y]Scale
+			android:pivot[X|Y]
+		/>
+		<translate
+			android:from[X|Y]Delta
+		/>
+		<rotate
+			android:fromDegrees
+			android:pivot[X|Y]
+		/>
+	</set>
+
+	final Animation anim = AnimationUtils.loadAnimation(this,R.anim.my_anim);
+	//设置动画结束后保留图片的变换结果
+	anim.setFillAfter(true);
+	image.startAnimation(anim);
+
+### Style ###
+
+	<!--  res\values\my_style.xml  -->
+    <resources>
+		<style name="style1">
+			<item name="android:textSize">20sp</item>
+		</style>
+		<style name="style2" parent="@style/style1">
+			<item name="android:textSize">25sp</item>
+		</style>
+	<resources>
+
+
+	<!-- when apply to View -->
+
+	<EditText
+		style = "@style/style1"/>
+
+### Theme ###
+>只能作用于Activity,不能作用于单个的View组件
+
+>主题定义的格式应该是改变窗口外观的格式,例如窗口标题、窗口边框等
+	
