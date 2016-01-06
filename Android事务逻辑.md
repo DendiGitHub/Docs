@@ -152,75 +152,48 @@ activity中可以添加如下标签
 	PackageInfo info = manager.getPackageInfo(this.getPackageName(),0);
 	String version = info.versionName;
 
-### StateListDrawable ###
->stateListDrawable用于组织多个Drawable对象,当使用StateListDrawable作为目标组件的背景、前景图片时,StateListDrawable对象所显示的Drawable对象会随目标组件状态的改变而自动切换
 
-- android:color或android:drawable:指定颜色或Drawable对象
-- android:state_XXX指定特定状态
-	- state_checked	
-	- state_enabled
-	- state_pressed
-	- and so on
+### 国际化和本地化 ###
+- Internationalization = I18N
+- Localization = L10N
 
-### ClipDrawable ###
+国际化思路：
+>将程序中的标签、提示等信息放在资源文件中,程序需要支持哪些国家、语言环境，就提供响应的资源文件，资源文件是key-value对，每个资源文件中的key是不变的,但value则随不用国家、语言改变。
 
-    <?xml versoin = "1.0" encoding="utf-8"?>
-	<clip xmlns:android="http://schemas.android.com/apk/res/android"
-		android:drawab;e="@drawable/drawable_resource"
-		android:clipOrientation=["horizontal" | "vertical"]
-		android:gravity=["top" | "center" | ...]
-	/>
+资源文件的命名:
+>BaseName是资源文件的基本名,language和country必须是Java所支持的语言和国家
+>
+- baseName_language_country.properties
+- baseName_language.properties
+- baseName.properties
 
-	ClipDrawable drawable = (ClipDrawable) imageview.getDrawable();
-	drawable.setLevel(0~10000);
+相关类：
 
-### AnimationDrawable ###
-    
-	<set xmlns:android
-		android:interpolator="@android:anim/linear_interpolator"
-		android:duration="5000">
-		<alpha
-			android:fromAlpha = ""
-			android:toAlpha = ""
-		/>
-		<scale
-			android:from[X|Y]Scale
-			android:pivot[X|Y]
-		/>
-		<translate
-			android:from[X|Y]Delta
-		/>
-		<rotate
-			android:fromDegrees
-			android:pivot[X|Y]
-		/>
-	</set>
+- ResourceBundle:用于加载一个国家、语言资源包
+- Locale：用于封装一个特定的国家/区域、语言环境
+- MessageFormat:用于格式化带占位符的字符串
+ >
 
-	final Animation anim = AnimationUtils.loadAnimation(this,R.anim.my_anim);
-	//设置动画结束后保留图片的变换结果
-	anim.setFillAfter(true);
-	image.startAnimation(anim);
-
-### Style ###
-
-	<!--  res\values\my_style.xml  -->
-    <resources>
-		<style name="style1">
-			<item name="android:textSize">20sp</item>
-		</style>
-		<style name="style2" parent="@style/style1">
-			<item name="android:textSize">25sp</item>
-		</style>
-	<resources>
-
-
-	<!-- when apply to View -->
-
-	<EditText
-		style = "@style/style1"/>
-
-### Theme ###
->只能作用于Activity,不能作用于单个的View组件
-
->主题定义的格式应该是改变窗口外观的格式,例如窗口标题、窗口边框等
+    public static void main(String args[]){
+		//取得系统默认的国家、语言环境
+		Locale myLocale = Locale.getDefault(Locale.Category.FORMAT);
+		//根据指定国家、语言环境加载资源文件
+		ResourceBundle bundle = ResourceBundle.getBundle("mess",myLocale);
+		//输出从资源文件中取得的消息
+		System.out.println(bundle.getString("hello"));
+	}
 	
+	// mess_zh_CN.properties
+	hello = 您好！
+	// mess_en_US.properties
+    hello = Welcome!
+
+	//非西欧字符的资源文件
+	native2ascii 源资源文件 目的资源文件
+
+
+提供国际化资源：
+
+- 文件夹命名方式
+	- values-语言代码-r国家代码
+	- drawable-语言代码-r国家代码

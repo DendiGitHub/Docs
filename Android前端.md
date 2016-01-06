@@ -409,3 +409,104 @@ Intent对象大致包含
 			<category android:name=""/>
 		<intent-filter>
 	</activity>
+
+### StateListDrawable ###
+>stateListDrawable用于组织多个Drawable对象,当使用StateListDrawable作为目标组件的背景、前景图片时,StateListDrawable对象所显示的Drawable对象会随目标组件状态的改变而自动切换
+
+- android:color或android:drawable:指定颜色或Drawable对象
+- android:state_XXX指定特定状态
+	- state_checked	
+	- state_enabled
+	- state_pressed
+	- and so on
+
+### ClipDrawable ###
+
+    <?xml versoin = "1.0" encoding="utf-8"?>
+	<clip xmlns:android="http://schemas.android.com/apk/res/android"
+		android:drawab;e="@drawable/drawable_resource"
+		android:clipOrientation=["horizontal" | "vertical"]
+		android:gravity=["top" | "center" | ...]
+	/>
+
+	ClipDrawable drawable = (ClipDrawable) imageview.getDrawable();
+	drawable.setLevel(0~10000);
+
+### AnimationDrawable ###
+    
+	<set xmlns:android
+		android:interpolator="@android:anim/linear_interpolator"
+		android:duration="5000">
+		<alpha
+			android:fromAlpha = ""
+			android:toAlpha = ""
+		/>
+		<scale
+			android:from[X|Y]Scale
+			android:pivot[X|Y]
+		/>
+		<translate
+			android:from[X|Y]Delta
+		/>
+		<rotate
+			android:fromDegrees
+			android:pivot[X|Y]
+		/>
+	</set>
+
+	final Animation anim = AnimationUtils.loadAnimation(this,R.anim.my_anim);
+	//设置动画结束后保留图片的变换结果
+	anim.setFillAfter(true);
+	image.startAnimation(anim);
+
+### Style ###
+
+	<!--  res\values\my_style.xml  -->
+    <resources>
+		<style name="style1">
+			<item name="android:textSize">20sp</item>
+		</style>
+		<style name="style2" parent="@style/style1">
+			<item name="android:textSize">25sp</item>
+		</style>
+	<resources>
+
+
+	<!-- when apply to View -->
+
+	<EditText
+		style = "@style/style1"/>
+
+### Theme ###
+>只能作用于Activity,不能作用于单个的View组件
+
+>主题定义的格式应该是改变窗口外观的格式,例如窗口标题、窗口边框等
+
+### 使用原始资源 ###
+
+- 位于/res/raw目录下,可以使用R文件语法进行访问
+- 位于/assets/目录下,可以使用AssetManager来进行管理
+>
+    AssetManager am = getAssets();
+	AssetFileDescriptor afd = am.openFd("shot.mp3");
+	MediaPlayer mediaPlayer = new MediaPlayer();
+	mediaPlayer.setDataSource(afd.getFileDescriptor());
+	mediaPlayer.prepare();
+	mediaPlayer.start();
+
+### Bitmap ###
+    BitmapDrawable drawable = new BitmapDrawable(bitmap);
+	Bitmap bitmap = drawable.getBitmap();
+
+	//返回该Bitmap对象是否已被回收
+	bitmap.isRecycled()
+	//强制一个Bitmap对象立即回收自己
+	bitmap.recycle()
+
+	BitmapFactory.decodeByteArray(byte[] data,int offset,int length);
+	BitmapFactory.decodeFile(String pathName);
+	BitmapFactory.decodeFileDescriptor(FileDescriptor fd);
+	BitmapFactory.decodeResource(Resources res,int id);
+	BitmapFactory.decodeResource(InputStream is);
+
+### 绘图 ###
