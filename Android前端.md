@@ -510,3 +510,23 @@ Intent对象大致包含
 	BitmapFactory.decodeResource(InputStream is);
 
 ### 绘图 ###
+>Android的绘图应继承View组件,并重写它的onDraw(Canvas canvas)方法
+
+Canvas
+
+- drawArc/Circle/Line/Oval/Path/Point/Rect/Text
+- drawBitmap
+- rotate旋转/scale缩放/skew倾斜/translate
+
+Paint
+>表示Canvas上的画笔
+- setARGB、Color、Style
+
+    Path path = new Path();
+	path.MoveTo(x,y);
+	path.LineTo(x,y);
+	path.close();
+
+	canvas.drawPath(path,paint);
+
+>通知组件的重绘需要调用invalidate()或者在非UI线程中调用postInvalidate()
