@@ -520,13 +520,49 @@ Canvas
 
 Paint
 >表示Canvas上的画笔
+>
 - setARGB、Color、Style
+- setAntiAlias(true)
 
     Path path = new Path();
-	path.MoveTo(x,y);
-	path.LineTo(x,y);
+	path.moveTo(x,y);
+	path.quadTo(middleX,middleY,x,y);
+	path.lineTo(x,y);
 	path.close();
 
 	canvas.drawPath(path,paint);
 
 >通知组件的重绘需要调用invalidate()或者在非UI线程中调用postInvalidate()
+
+例子：
+画图板的实现
+
+双缓冲技术：
+>当程序需要在指定的View上进行绘制时，程序并不直接绘制到该View组件上，而是先绘制到内存中的一个Bitmap图片（作为缓冲区）上，等到内存中的Bitmap绘制好后，再一次性的将Bitmap绘制到View组件下。
+
+
+### 图形特效处理 ###
+使用Matrix控制变换
+>是一个矩阵工具类，本身并不能对图形或组件进行变换，但它可与其他API结合来控制图形、组件的变换。
+
+>变换步骤
+>
+- 获取Matrix对象，既可新建，也可直接获取其他对象内封装的Matrix
+- 利用Matrix对象进行评议、旋转、缩放、倾斜等
+- 将程序对Matrix所做的变换应用到指定图形或组件
+
+    //平移
+	setTranslate(float dx,float dy)
+	//倾斜
+	setSkew(float kx,float ky,float px,float py);//px、py为轴心
+	setSkew(float kx,float ky)//kx、ky为倾斜距离
+	//旋转
+	setRotate(float degrees);
+	setRotate(float degrees,float px,float py);
+	//缩放
+	setScale(float sx,float sy);
+	setScale(float sx,float sy,float px,float py);
+
+	canvas.drawBitmao(bitmao , matrix, paint)
+
+
