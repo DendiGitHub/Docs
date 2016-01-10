@@ -303,6 +303,7 @@ Activity中使用Fragment
 
 1. 在布局文件中使用<fragment../>
 2. 通过FragmentTransaction对象的add()方法来添加Fragment
+>
 
     Fragment fragment = new ConcreteFragment();
 	Bundle arguments = new Bundle();
@@ -523,6 +524,7 @@ Paint
 >
 - setARGB、Color、Style
 - setAntiAlias(true)
+- setShader(Shader shader)//渲染效果
 
     Path path = new Path();
 	path.moveTo(x,y);
@@ -565,4 +567,72 @@ Paint
 
 	canvas.drawBitmao(bitmao , matrix, paint)
 
+#### drawBitmapMesh图像扭曲 ####
 
+	/**
+	*bitmap:源位图
+	*meshWidth:在横向上把该源位图划分成多少格
+	*meshHeight:在纵向上把该源位图划分成多少格
+	*verts:长度是(meshWidth+1)*(meshHeight+1)*2的数组，记录了扭曲后的位图各顶点的位置
+	*vertOffset:控制verts数组中从第几个数组元素开始才对bitmap进行扭曲
+	*
+	*/
+    drawBitmapMesh(Bitmap bitmap,int meshWidth,int meshHeight,
+		float[] verts,int vertOffset,int[] colors,int colorOffset,Paint paint)
+
+#### 逐帧动画 ####
+
+在anim的xml文件中定义
+    <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+		android:oneshot="true|false"
+		<item 
+			android:drawable=""
+			android:duration=""/>
+	</animation-list>
+
+一般将其作为ImageView的背景
+    ImageView imageView = new ImageView(this);
+	imageView.setBackgroundResource(R.anim.blast);
+	AnimationDrawable anim = (AnimationDrawable)imageView.getBackGround();
+
+	anim.start();
+>如果最后一帧不是空白，而程序又没有控制影藏播放动画的ImageView,用户会看到动画结束了，但是动画效果依然残留在那里。对此可以重写ImageView的onDraw()方法
+>
+	@override
+	protected void onDraw(Canvas canvas){
+		try{
+			Field field = AnimationDrawable.class.getDeclaredField("mCurFrame");
+			field.setAccessible(true);
+			int curFrame = field.getInt(anim);//获取anim动画的当前帧
+			if(curFrame == anim.getNumberOfFrames()-1){
+				setVisibilirt(View.INVISIBLE);
+			}
+		}catch(Exception e){
+		}
+		super.onDraw(canvas);
+	}
+
+#### 补间Tween动画 ####
+>开发者只需指定动画开始、动画结束等关键帧，而动画变化的中间帧由系统计算并补齐。
+>实际上任为播放的逐帧动画
+
+Animation
+
+- AlphaAnimation
+- ScaleAnimation
+- TranslateAnimation
+- RotateAnimation
+>
+    Animation anim = AnimationUtils.loadAnimation(this,R.main.reverse);
+	imageView.startAnimation(anim);
+
+Interpolator
+>根据特定算法计算出整个动画所需要动态插入帧的密度和位置。
+>
+>简单的说，控制动画的变化速度。
+>
+- LinearInterpolator
+- AccelerateInterpolator
+- AccelerateDecelerateInterpolator
+- CycleInterpolator
+- 
