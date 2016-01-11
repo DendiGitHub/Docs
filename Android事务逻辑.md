@@ -197,3 +197,60 @@ activity中可以添加如下标签
 - 文件夹命名方式
 	- values-语言代码-r国家代码
 	- drawable-语言代码-r国家代码
+
+
+### Handler ###
+使用普通的Thread创建Handler:
+    Handler mHandler;
+	public void createHandler(){
+		new Thread(){
+			@override
+			public void run(){
+				super.run();
+				//使用Looper创建于当前线程绑定的Looper实例
+				Looper.prepare();
+				//使用Looper生成Handler实例创建Handler
+				mHandler = new Handler(Looper.myLooper());
+				//实现消息循环
+				Looper.loop();
+			}
+		}.start();
+	}
+
+HandlerThread的实现
+
+    @override
+	public void run(){
+		mTid = Process.myTid();
+		Looper.prepare();
+		synchronized(this){
+			mLooper = Looper.myLooper();
+			notifyAll();
+		}
+		Process.setThreadPriority(mPriority);
+		onLooperPrepared();
+		Looper.loop();
+		mTid = -1;
+	}
+
+相关概念：
+- Message
+	- 消息，发送到Handler进行处理的对象
+- MessageQueue
+	- 消息队列，Message的集合
+- Looper
+	- 用来从MessageQueue中抽取Message
+- Handler
+	- 处理Looper抽取出来的Message
+
+如何使用HandlerThread
+    private Handler mHandler;
+	HandlerThread workerThread = new HandlerThread("LightTaskThread");
+	workerThread.start();
+	mHandler = new Handler(workerThread.getLooper());
+
+>可以使用HandlerThread处理本地IO读写操作，因为其大多属于毫秒级别，对于单线程+异步队列不会产生较大的阻塞
+
+>对于本地读取操作可以使用postAtFrontOfQueue方法，快速将读取操作加入队列前端执行，必要时返回给主线程更新UI
+
+>对于本地IO写操作，根据具体情况，选择post或者postDelayd方法执行，比如SharedPreference commit，或者文件写入操作。
