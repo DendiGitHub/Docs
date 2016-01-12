@@ -254,3 +254,106 @@ HandlerThread的实现
 >对于本地读取操作可以使用postAtFrontOfQueue方法，快速将读取操作加入队列前端执行，必要时返回给主线程更新UI
 
 >对于本地IO写操作，根据具体情况，选择post或者postDelayd方法执行，比如SharedPreference commit，或者文件写入操作。
+
+
+### 网络应用 ###
+
+>Android不允许在非UI线程中建立网络连接
+
+><uses-permission android:name="android.permissioon.INTERNET"/>
+
+>IP协议是Internet上使用的一个关键协议，可以使Internet成为一个允许连接不同类型的计算机和不同操作系统的网络，保证了计算机之间可以发送和接收数据
+
+>TCP协议使用重发机制：当一个通信实体发送一个消息给另一个通信实体后，需要收到另一个通信实体的确认信息，若没有收到则会进行重发。
+
+
+服务器端：
+>ServerSocket用于接收其他通信实体的连接请求
+>
+>一般指定1024以上的端口作为ServerSocket的端口号，避免与其他应用程序冲突
+>
+>使用accept()会返回一个Socket
+
+    ServerSocket ss = new ServerSocket(int port,int backlog,InetAddress localAddr);
+	while(true){
+		Socket s = ss.accept();
+		new Thread(new ServerThread(s)).start();//防止阻塞 
+	}
+
+Socket
+
+	//指定远程主机、远程端口的Socket,默认使用系统分配的端口
+    Socket s = new Socket("192.168.1.88",30000);
+	//
+	Socket s = new Socket(InetAddress/String remoteAddress,int port,InetAddress localAddr,int localPort);
+	//当执行new之后,就已经激活了服务器端SocketServer的accept()操作
+
+
+	//Socket中的操作
+	InputStream getInputStream();//获取输入流
+	OutputStream getOutputStream();//获取输出流
+
+	//设置超时
+	socket.setSoTimeout(100000);//设置超时,会返回SocketTimeoutException
+
+	//设置无连接的Socket,然后再进行连接
+	Socket s = new Socket();
+	s.connect(new InetSocketAddress(host,port),100000);
+
+
+举例：
+    
+	//Server
+	while(true){
+		Socket socket = serverSocket.accept();
+		OutputStream os = s.getOutputStream();
+		os.write("hello world".getBytes("utf-8"));
+		os.close();
+		socket.close();
+	}
+
+	//Client
+	Socket socket = new Socket("ip",30000);
+	BufferedReader br = new BufferedReader(
+			new InputStreamReader(
+				socket.getInputStream()
+			)
+	);
+	String line = br.readLine();
+	br.close;
+	socket.close(); 
+
+### URL访问网络资源 ###
+
+>URL Uniform Resource Locator代表同意资源定位器，指向互联网资源的指针。可以是简单文件或目录、对更复杂对象的引用，入数据库或搜索引擎的查询等。
+
+>格式: protocol://host:port/resourceName
+
+    URL类支持的方法
+	String getFile()
+	String getHost()
+	String getPath()
+	int getPort()
+	String getProtocol()
+	String getQuery()
+	URLConnection openConnection()
+	InputStream openStream()
+
+#### 使用URL进行下载 ####
+	InputStream is = url.openStream();
+	//打开手机文件对应的输出流
+	OutputStream os = openFileOutput("crazyit.png",MODE_PRIVATE);
+	byte[] buff = new byte[1024];
+	int hasRead = 0;
+	while( (hasRead = is.read(buff)) >0 ){
+		os.write(buff,0,hasRead);
+	}
+	is.close();
+	os.close();
+
+#### 使用URL提交请求 ####
+1. 通过调用URL对象的openConnection()方法来创建URLConnection
+2. 设置URLConnection的参数和普通请求属性
+3. 如果只是发送GET方式的请求，那么使用connect方法建立和远程资源之间的实际连接即可；如果需要发送POST方式的请求，则需要获取URLConnection实例对应的输出流来发送请求参数
+4. 远程资源变为可用，程序可以访问远程资源的投资端，或通过输入流读取远程资源的数据
+
