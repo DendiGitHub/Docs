@@ -111,6 +111,8 @@ activity中可以添加如下标签
 	}
 	//从1秒钟开始，每5秒执行一次Task
 	timer.schedule(task,1000,5000);
+	//取消timer
+	timer.cancel();
 
 ### PendingIntent ###
 >Intent是及时启动，随所在的Activity消失而消失
@@ -201,6 +203,7 @@ activity中可以添加如下标签
 
 ### Handler ###
 使用普通的Thread创建Handler:
+
     Handler mHandler;
 	public void createHandler(){
 		new Thread(){
@@ -234,6 +237,7 @@ HandlerThread的实现
 	}
 
 相关概念：
+
 - Message
 	- 消息，发送到Handler进行处理的对象
 - MessageQueue
@@ -244,6 +248,7 @@ HandlerThread的实现
 	- 处理Looper抽取出来的Message
 
 如何使用HandlerThread
+
     private Handler mHandler;
 	HandlerThread workerThread = new HandlerThread("LightTaskThread");
 	workerThread.start();
@@ -320,7 +325,7 @@ Socket
 			)
 	);
 	String line = br.readLine();
-	br.close;
+	br.close();
 	socket.close(); 
 
 ### URL访问网络资源 ###
