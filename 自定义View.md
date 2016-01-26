@@ -1,4 +1,10 @@
 # 自定义View #
+## 获取坐标方法 ##
+    //获取View自身的顶边到其父布局顶边的距离
+	getTop()
+	getLeft()
+	getBottom()
+	getRight()
 
 ## 定义自定义View的过程 ##
 - 自定义View的属性

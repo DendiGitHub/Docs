@@ -86,6 +86,114 @@
     ListView listView = (ListView)findViewById(R.id.listview);
 	listView.setEmptyView(findViewById(R.id.empty_view));
     
-	
+## ListView滑动监听 ##
+### 通过OnTouchListener来实现监听 ###
+
+    mListView.setOnTouchListener(new View.OnTouchListener(){
+		@override
+		public boolean onTouch(View v,MotionEvent event){
+			switch(event.getAction()){
+				case MotionEvent.ACTION_DOWN:
+					break;
+				case MotionEvent.ACTION_MOVE:
+					break;
+				case MotionEvent.ACTION_UP:
+					break;
+			}
+		}
+	}
+
+### 通过OnScrollListener来实现监听 ###
+
+    mListView.setOnScrollListener(new OnScrollListener(){
+		@override
+		public void onScrollStateChanged(AbsListView view,int scrollState){
+			switch(scrollState){
+				case OnScrollListener.SCROLL_STATE_IDLE:
+				//滑动停止时
+					break;
+				case OnScrollListener.SCROLL_STATE_TOUCH_SCROLL:
+				//正在滚动
+					break;
+				case OnScrollListener.SCROLL_STATE_FLING:
+				//手指用力滑动，在离开后ListView由于惯性继续滑动的状态
+					break;
+			}
+		}
+
+		@override
+		public void onScroll(AbsListView view,int firstVisivleItem,int visibleItemCount,int totalItemCount){
+			//滚动时会一直调用
+
+			if(firstVisibleItem+visibleItemCount == totalItemCount &&
+				totalItemCount>=0){
+				//滚动到最后一行
+			}
+
+			if(firstVisibleItem > lastVisibleItemPosition){
+				//上滑
+			}
+		}
+	}
+
+### 弹性滑动 ###
+
+	@override
+	protected boolean overScrollBy(int deltaX,int deltaY,int scrollX,int scrollY,int maxOverScrollX,int maxOverScrollY,boolean isTouchEvent){
+		//替换maxOverScrollY
+		return super.overScrollBy(deltaX,deltaY,scrollX,scrollY,scrollRangeX,scrollRangeY,maxOverScrollX,mMaxOverDistance,isTouchEvent);
+	}
+
+	//可以根据屏幕密度设置maxOverScrollY
+	DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+	float density = metrics.density;
+	mMaxOverDistance = (int) (density*mMaxOverDistance);
+
+### 自动显示、隐藏布局的ListView ###
+
+首先保证ListView的第一个Item不被Toolbar遮挡
+
+	View header = new View(this);
+	header.setLayoutParams(new AbsListView.LayoutParams(
+		AbsListView.LayoutParams.MATCH_PARENT,(int)getResources().getDimension(
+			R.dimen.abc_action_bar_default_height_material)));
+	mListView.addHeaderView(header);
+
+获取系统认为的最低滑动距离
+
+    mTouchSlop = ViewConfiguration.get(this).getScaledTouchSlop();
+
+在onTouchListener中进行判断，调用Animator
+
+    private void toolbarAnim(int flag){
+		if(mAnimator !=null && mAnimator.isRunning()){
+			mAnimator.cancel();
+		}
+		if(flag==0){
+			mAnimator = ObjectAnimator.ofFloat(mToolbar,"translationY",
+				mToolbar.getTranslationY(),0);
+		}else{
+			mAnimator = ObjectAnimator.ofFloat(mToolbar,"translationY",
+				mToolbar.getTranslationY(),-mToolbar.getHeight());
+		}
+		mAnimator.start();
+	}
+
+### 聊天ListView，多种布局的LisView ###
+>用Adapter开刀
+
+>重写其中的getItemViewType和getViewType方法，并在getView中调用
+
+    @override
+	public int getItem ViewType(int position){
+		//返回第position个Item是何种类型
+		return type;
+	}
+
+	@override
+	public int getViewTypeCount(){
+		//返回不同布局的总数
+		return number;
+	}
 
 	
