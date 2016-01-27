@@ -1,4 +1,5 @@
 # Android Scroll #
+>
 ## Android坐标系和视图坐标系 ##
 >Android坐标系是绝对坐标，使用getRawX()和getRawY()得到
 
@@ -99,3 +100,7 @@
 		);
 		invalidate();
 	break;
+
+## 属性动画 ##
+
+### ViewDragHelper ###

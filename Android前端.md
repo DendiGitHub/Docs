@@ -519,6 +519,15 @@ Canvas
 - drawBitmap
 - rotate旋转/scale缩放/skew倾斜/translate
 
+	//保存画布，将之前所有已绘制的图像保存起来
+    canvas.save()
+	//合并图层，将save之后的图像与之前的图像合并
+	canvas.restore()
+	//坐标系的平移
+	canvas.translate()
+	//坐标系的旋转
+	canvas.rotate()
+
 Paint
 >表示Canvas上的画笔
 >
