@@ -1,5 +1,63 @@
 # Android Fragments #
 
+### SurfaceView ###
+Android系统中，View通过刷新来重绘视图，通过发出VSYNC信号来进行屏幕的重绘，刷新的间隔时间为16ms。如果在16ms内View完成了你所需要执行的所有操作，那么用户再视觉上，就不会产生卡顿的感觉；而如果执行的操作逻辑太多，特别是需要频繁刷新的界面上，例如游戏界面，那么就会不断阻塞出现成，从而导致画面卡顿。
+
+- View主要用于主动更新，而Surface主要适用于被动更新，例如频繁的刷新
+- View在主线程中对画面进行刷新，而SurfaceView通常会通过一个子线程来进行页面的刷新
+- View在绘图时没有使用双缓冲机制，而SurfaceView在底层实现机制中就已经实现了双缓冲机制
+
+SurfaceView的使用
+
+    public class SurfaceViewTemplate extends SurfaceView implements SurfaceHolder.Callback,Runnable{
+
+		/**
+		*mHolder = getHolder();
+		*mHolder.addCallback(this);
+		*/
+		private SurfaceHolder mHolder;
+		private Canvas mCanvas;
+		//子线程标志位
+		private boolean mIsDrawing;
+
+		//Callback的三个接口
+		@override
+		public void surfaceCreated(SurfaceHolder holder){
+			mIsDrawing = true;
+			new Thread(this).start();
+		}
+
+		@override
+		public void surfaceChanged(SurfaceHolder holder,int format,int width,int height){
+		}
+
+		@override
+		public void surfaceDestroyed(SurfaceHolder holder){
+			mIsDrawing = false;
+		}
+
+		//Runnable接口
+		@override
+		public void run(){
+			while(mIsDrawing){
+				draw();
+			}
+		}
+
+		public void draw(){
+			try{
+				mCanvas = mHolder.lockCanvas();
+				//draw sth
+			catch(Exception e){
+			}finally{
+				if(mCanvas!=null){
+					mHolder.unlockCanvasAndPost(mCanvas);
+				}
+			}}
+		}
+	}
+
+
 ### inflate ###
 >inflate()的作用就是将一个用xml定义的布局文件查找出来
 
@@ -349,6 +407,7 @@ FragmentManager
 - addOnBackStackChangeListener()注册监听器,监听后台栈的变化
 - 如果需要添加、删除、替换Fragment,则需要借助于FragmentTransaction对象,FragmentTransaction代表Activity对Fragment执行的多个改变
 
+>
     Fragment newFragment = new ExampleFragment();
 	FragmentTransaction transaction = getFragmentManager().beginTransaction();
 	//替换container中的Fragment
@@ -425,7 +484,7 @@ Intent对象大致包含
 
     <?xml versoin = "1.0" encoding="utf-8"?>
 	<clip xmlns:android="http://schemas.android.com/apk/res/android"
-		android:drawab;e="@drawable/drawable_resource"
+		android:drawable="@drawable/drawable_resource"
 		android:clipOrientation=["horizontal" | "vertical"]
 		android:gravity=["top" | "center" | ...]
 	/>
@@ -519,6 +578,8 @@ Canvas
 - drawBitmap
 - rotate旋转/scale缩放/skew倾斜/translate
 
+>
+
 	//保存画布，将之前所有已绘制的图像保存起来
     canvas.save()
 	//合并图层，将save之后的图像与之前的图像合并
@@ -534,7 +595,7 @@ Paint
 - setARGB、Color、Style
 - setAntiAlias(true)
 - setShader(Shader shader)//渲染效果
-
+>
     Path path = new Path();
 	path.moveTo(x,y);
 	path.quadTo(middleX,middleY,x,y);
@@ -592,6 +653,7 @@ Paint
 #### 逐帧动画 ####
 
 在anim的xml文件中定义
+
     <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
 		android:oneshot="true|false"
 		<item 
@@ -600,6 +662,7 @@ Paint
 	</animation-list>
 
 一般将其作为ImageView的背景
+
     ImageView imageView = new ImageView(this);
 	imageView.setBackgroundResource(R.anim.blast);
 	AnimationDrawable anim = (AnimationDrawable)imageView.getBackGround();
