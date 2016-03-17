@@ -668,7 +668,11 @@ Paint
 	AnimationDrawable anim = (AnimationDrawable)imageView.getBackGround();
 
 	anim.start();
->如果最后一帧不是空白，而程序又没有控制影藏播放动画的ImageView,用户会看到动画结束了，但是动画效果依然残留在那里。对此可以重写ImageView的onDraw()方法
+>如果最后一帧不是空白，而程序又没有控制影藏播放动画的
+>
+>
+>
+>,用户会看到动画结束了，但是动画效果依然残留在那里。对此可以重写ImageView的onDraw()方法
 >
 	@override
 	protected void onDraw(Canvas canvas){
@@ -707,4 +711,54 @@ Interpolator
 - AccelerateInterpolator
 - AccelerateDecelerateInterpolator
 - CycleInterpolator
-- 
+
+## ImageView ##
+
+### ScaleType ###
+- Center
+	- 居中显示，当图片长宽超过View的长宽，则截取图片的居中部分显示
+- CENTER_CROP
+	- 按比例扩大图片的size居中显示，使得图片长宽>=View的长宽
+- CENTER_INSIDE
+	- 按比例扩大图片的size居中显示，使得图片长宽<=View的长宽
+- FIT_CENTER
+- FIT_START
+- FIT_END
+	- 把图片缩放到屏幕宽度进行显示
+- FIT_XY
+	- 不按比例缩放图片，目标把整个View塞满
+
+### Android背景平铺模式 ###
+tileMode
+- disable
+	- 不使用平铺
+- clamp
+	- 复制边缘色彩
+- repeat
+	- X、Y轴进行重复图片显示
+- mirror
+	- 在水平和垂直方向上使用交替镜像的方式重复图片的绘制
+####  将背景以XML Bitmap的形式定义： ####
+    <?xml >
+	<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+		android:id="@id/toolbar_bg_bmp"
+		android:src="@drawable/toolbar_bg"
+		android:tileMode="disabled"
+		android:gravity=""
+	</bitmap>
+
+	android:background="@drawable/toolbar_bg_bmp"
+#### selector ####
+
+	<selector xmlns:android="">
+		<item android:state_pressed="true">
+			<bitmap>
+				android:src="@drawable/toolbar_bg_sel"
+				android:tileMode="disable"
+			</bitmap>
+		</item>
+
+		<item>
+		</item>
+	<selector>
+

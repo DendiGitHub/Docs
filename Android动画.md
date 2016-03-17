@@ -12,8 +12,8 @@ Animation框架定义了透明度、旋转、缩放和位移几种常见的动�
 	TranslateAnimation anim = new TranslateAnimation(0,200,0,300);
 	//缩放动画
 	ScaleAnimation anim = new ScaleAnimation(0,2,0,2);
-	aa.setDuration(1000);
-	view.startAnimation(aa);
+	anim.setDuration(1000);
+	view.startAnimation(anim);
 	
 	//动画集合
 	AnimationSet animationSet = new AnimationSet(true);
@@ -65,6 +65,7 @@ Animation框架定义了透明度、旋转、缩放和位移几种常见的动�
 
 ### PropertyValuesHolder ###
 类似视图动画中的AnimationSet，在属性动画中，如果针对一个对象的多个属性，要同事作用多种动画，可以通过PropertyValuesHolder来实现
+
     PropertyValuesHolder pvh1 = PropertyValuesHolder.ofFloat("translationX",300f);
 	PropertyValuesHolder pvh2 = PropertyValuesHolder.ofFloat("translationX",1f,0,1f);
 	PropertyValuesHolder pvh3 = PropertyValuesHolder.ofFloat("translationY",1f,0,1f);
