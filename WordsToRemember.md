@@ -12,3 +12,8 @@ correlation 相关关系
 causation   原因；因果关系
 sentinel    哨兵
 intersection交叉
+metaphor	隐喻
+bold		大胆的，英勇的
+Deliberate	故意的，深思熟虑的
+typography	排印；印刷格式
+immerse 	沉浸
