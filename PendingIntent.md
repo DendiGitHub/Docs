@@ -56,3 +56,19 @@ AMS从发起端获取PendingIntent，在受到处理端激发事件后进行激�
 
 ## AlarmManager ##
 
+    //实现长连接
+
+	//Application的onCreate()
+	public void onCreate(){
+		startLongConn();
+	}
+
+	public void startLongConn(){
+		quitLongConn();
+		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		Intent intent = new Intent(this,LongConnService.class);
+		intent.setAction(LongConnService.ACTION);
+		PendingIntent pendingIntent = PendingIntent.getService(this,0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+		long triggerAtTime = SystemClock.elapsedRealtime();
+		manager.setRepeating(AlarmManager.RTC_WAKEIP,triggerAtTime, 60*1000,pendingIntent);
+	}
