@@ -25,6 +25,16 @@
 - background
 - empty
 
+
+
+Process的优先级
+优先级从-20到19
+- THREAD_PRIORITY_DEFAULT		0
+- LOWEST						19
+- BACKGROUND					10
+- MORE_FAVORABLE				-1
+- LESS_FABORABLE				1
+
 ### 拓展IOS中的内存 ###
 
 iOS的世界里，内存被分为Clean Memory和DirtyMemory

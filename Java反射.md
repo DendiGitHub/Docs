@@ -5,6 +5,9 @@
 
 加载完类以后，在堆内存中会产生一个Class类型的对象，这个对象包含了完整的类的结构信息，而且这个Class对象就像一面镜子，透过这个镜子可以看到类的结构，所以称为反射。
 
+## 动态语言 ##
+在程序运行时，允许改变程序结构或变量类型
+
 ## Class对象的获取 ##
 
 - 对象的getClass()方法
@@ -26,6 +29,10 @@ First Header  | Second Header
 所在包  | Package getPackage()
 类名  | String getName()
 简称  | String getSimpleName()
+
+Constructor.newInstance(paramter...)
+
+method.invoke(object,paramter)
 
 ## 判断类本身信息的方法 ##
 First Header  | Second Header
