@@ -44,3 +44,42 @@
 ## Fragment ##
 
 ## Application ##
+
+
+### 关于一键退出APP ###
+
+网上有一种做法是用一个容器装下所有启动的activity，然后遍历他们进行finish，
+
+	//后续所有Activiity继承BaseActivity
+    class BaseActivity extends Activity{
+		@Override 
+		public onCreate(Bundle savednstanceState){
+			ActivityList.register(this);
+		}
+
+
+		@Override
+		public onDestroy(){
+			ActivityList.unregister(this);
+		}
+	}
+
+	public class ActivityList{
+		public static List<Activity> activities = new ArrayList<Activity>();
+		
+		public static void register(Activity activity){
+			activities.add(activity);
+		}
+
+		public static void unregister(Activity activity){
+			activities.unregister(activity);
+		}
+
+		public static void finish(){
+			for(Activity activity:activities){
+				if(activity.sFinishing()){
+					activity.finish();
+				}
+			}
+		}
+	}
