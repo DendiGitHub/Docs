@@ -1,10 +1,100 @@
 # 自定义View #
+步骤：
+
+- 自定义View属性
+- 在View的构造方法中获得我们自定义的属性
+- 重写onMeasure
+- 重写onDraw
+
+## 定义属性
+
+在res/values下建立attrs.xml,在里面定义我们的属性和声明我们的整个样式
+
+```
+<?xml version="" encoding=""?>
+<resources>
+    
+    <attr name = "" format= "" />
+
+    <declare-styleable name="">
+        <attr name = ""/>
+    </declare-styleable>
+</resources>
+```
+
+> 
+
+format可选字段
+
+- string
+- color
+- demension
+- integer
+- enum
+- reference
+- float
+- boolean
+- fraction
+- flag
+
+## 获得属性
+
+```
+TypedArray typedArray = context.obtainStyledAttributes(attrs,R.styleable.);
+```
+
+```
+typedArray.getXX(R.styleable.XX_name);
+```
+
+```
+typedArray.recycle();
+```
+
+## 重写onMeasure
+
+```
+@Override
+protected void onMeasure(int widthMeasureSpec , int heightMeasureSpec){
+    int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+    int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+    int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+    int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+```
+
+```
+    setMeasuredDimension(calculateWidth(widthMode,widthSize),calculateHeight(heightMode,heightSize));
+}
+
+private int getMeasuredWidth(int widthMode, int widthSize) {
+    int result = 0;
+    if(widthMode==MeasureSpec.EXACTLY){
+        result = widthSize;
+    }else{
+        result = 200;
+        if(widthMode == MeasureSpec.AT_MOST){
+            result = Math.min(result,widthSize);
+        }
+    }
+    return result;
+}
+```
+
+
+
+## 重写onDraw
+
+- getMeasuredWidth
+- getPaddingLeft
+- mWidth
+
 ## 获取坐标方法 ##
+
     //获取View自身的顶边到其父布局顶边的距离
-	getTop()
-	getLeft()
-	getBottom()
-	getRight()
+    getTop()
+    getLeft()
+    getBottom()
+    getRight()
 
 ## 定义自定义View的过程 ##
 - 自定义View的属性
@@ -18,37 +108,37 @@
 测量的模式：
 
 - EXACTLY
-	- 当我们将空间的layout_width\layout_height或指定为match_parent属性时
+  - 当我们将空间的layout_width\layout_height或指定为match_parent属性时
 - AT_MOST
-	- wrap_content，此时空间的长度只要不超过父控件允许的最大尺寸即可
+  - wrap_content，此时空间的长度只要不超过父控件允许的最大尺寸即可
 - UNSPECIFIED
-	- View默认的onMeasure方法只支持EXACTLY方法，所以如果在自定义控件的时候不重写onMeasure()方法的话，就只能使用EXACTLY模式。
+  - View默认的onMeasure方法只支持EXACTLY方法，所以如果在自定义控件的时候不重写onMeasure()方法的话，就只能使用EXACTLY模式。
 
 onMeasure()方法最终是调用setMeasuredDemension(int measuredWidth,int measuredHeight)方法将测量后的宽高值设置进去
 
     @override
-	protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec){
-		setMeasuredDimension(
-			measureWidth(widthMeasureSpec),
-			measureHeight(heightMeasureSpec)
-		);
-	}
-
-	private int measureWidth(int measureSpec){
-		int result = 0;
-		int specMode = MeasureSpec.getMode(measureSpec);
-		int specSize = MeasureSpec.getSize(measureSpec);
-
-		if(specMode == MeasureSpec.EXACTLY){
-			result = specSize;
-		}else{
-			result = 200;
-			if(specMode == MeasureSpec.AT_MOST){
-				result = Math.min(result,specSize);
-			}
-		}
-		return result;
-	}
+    protected void onMeasure(int widthMeasureSpec,int heightMeasureSpec){
+    	setMeasuredDimension(
+    		measureWidth(widthMeasureSpec),
+    		measureHeight(heightMeasureSpec)
+    	);
+    }
+    
+    private int measureWidth(int measureSpec){
+    	int result = 0;
+    	int specMode = MeasureSpec.getMode(measureSpec);
+    	int specSize = MeasureSpec.getSize(measureSpec);
+    
+    	if(specMode == MeasureSpec.EXACTLY){
+    		result = specSize;
+    	}else{
+    		result = 200;
+    		if(specMode == MeasureSpec.AT_MOST){
+    			result = Math.min(result,specSize);
+    		}
+    	}
+    	return result;
+    }
 
 ### View的绘制 ###
 onDraw(Canvas canvas)
@@ -68,12 +158,12 @@ Paint
 - setShader(Shader shader)//渲染效果
 
     Path path = new Path();
-	path.moveTo(x,y);
-	path.quadTo(middleX,middleY,x,y);
-	path.lineTo(x,y);
-	path.close();
+  path.moveTo(x,y);
+  path.quadTo(middleX,middleY,x,y);
+  path.lineTo(x,y);
+  path.close();
 
-	canvas.drawPath(path,paint);
+  canvas.drawPath(path,paint);
 
 >通知组件的重绘需要调用invalidate()或者在非UI线程中调用postInvalidate()
 
@@ -96,15 +186,15 @@ Paint
 
 ### 重要的回调方法 ###
 - onFinishInflate()
-	- 从XML加载组件后回调
+  - 从XML加载组件后回调
 - onSizeChanged()
-	- 组件大小改变时回调
+  - 组件大小改变时回调
 - onMeasure()
-	- 测量大小
+  - 测量大小
 - onLayout()
-	- 确定显示的位置
+  - 确定显示的位置
 - onTouchEvent()
-	- 监听触摸事件
+  - 监听触摸事件
 
 ## 使用自定义View的一般模式 ##
 ### 对现有控件进行拓展 ###
@@ -113,59 +203,59 @@ Paint
 创建复合控件
 
     // res/value/attrs.xml 通用模板定义
-	<?xml version="1.0" encoding="TopBar">
-	<resources>
-		<declare-styleable name="TopBar">
-			<attr name="title" format="string" />
-			<attr name="titleTextSize" format="dimension" />
-			<attr name="titleTextColor" format="color" />
-		<declare-styleable/>
-	</resources>
-
-	//Java中使用
-	TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.TopBar);
-	mTitle = ta.getString(R.styleable.TopBar_title);
-	ta.recycle();
-
-	第三方控件需要使用如下代码来引入名字空间
-	xmlns:custom = "http://schemas.android.com/apk/res-auto"
-
-	<com.imooc.systemwidget.TopBar
-		android:id = "@+id/topBar"
-		custom:title="自定义标题"
-		custom:titleTextColor="#FFFFFF"
-	</com.xys.mytopbar.Topbar>
+    <?xml version="1.0" encoding="TopBar">
+    <resources>
+    	<declare-styleable name="TopBar">
+    		<attr name="title" format="string" />
+    		<attr name="titleTextSize" format="dimension" />
+    		<attr name="titleTextColor" format="color" />
+    	<declare-styleable/>
+    </resources>
+    
+    //Java中使用
+    TypedArray ta = context.obtainStyledAttributes(attrs,R.styleable.TopBar);
+    mTitle = ta.getString(R.styleable.TopBar_title);
+    ta.recycle();
+    
+    第三方控件需要使用如下代码来引入名字空间
+    xmlns:custom = "http://schemas.android.com/apk/res-auto"
+    
+    <com.imooc.systemwidget.TopBar
+    	android:id = "@+id/topBar"
+    	custom:title="自定义标题"
+    	custom:titleTextColor="#FFFFFF"
+    </com.xys.mytopbar.Topbar>
 ### 重写View来实现全新的控件 ###
 
 ### 事件拦截机制 ###
 假设有ViewGroupA,ViewGroupB,View
 
     ViewGroupA dispatchTouchEvent()
-	ViewGroupA onInterceptTouchEvent()
-	ViewGroupB dispatchTouchEvent()
-	ViewGroupB onInterceptTouchEvent()
-	View       onTouchEvent()
-	ViewGroupB onTouchEvent()
-	ViewGroupA onTouchEvent()
+    ViewGroupA onInterceptTouchEvent()
+    ViewGroupB dispatchTouchEvent()
+    ViewGroupB onInterceptTouchEvent()
+    View       onTouchEvent()
+    ViewGroupB onTouchEvent()
+    ViewGroupA onTouchEvent()
 
 Flase为继续、true为拦截
 
 	//ViewGroupB的onInterceptTouchEvent()返回true时
 
     ViewGroupA dispatchTouchEvent()
-	ViewGroupA onInterceptTouchEvent()
-	ViewGroupB dispatchTouchEvent()
-	ViewGroupB onInterceptTouchEvent()
-	ViewGroupB onTouchEvent()
-	ViewGroupA onTouchEvent()
+    ViewGroupA onInterceptTouchEvent()
+    ViewGroupB dispatchTouchEvent()
+    ViewGroupB onInterceptTouchEvent()
+    ViewGroupB onTouchEvent()
+    ViewGroupA onTouchEvent()
 
 >
 
     //View的onTouchEvent()返回true时
 
     ViewGroupA dispatchTouchEvent()
-	ViewGroupA onInterceptTouchEvent()
-	ViewGroupB dispatchTouchEvent()
-	ViewGroupB onInterceptTouchEvent()
-	ViewGroupA onTouchEvent()
-	View       onTouchEvent()
+    ViewGroupA onInterceptTouchEvent()
+    ViewGroupB dispatchTouchEvent()
+    ViewGroupB onInterceptTouchEvent()
+    ViewGroupA onTouchEvent()
+    View       onTouchEvent()

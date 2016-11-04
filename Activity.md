@@ -1,0 +1,32 @@
+# Activity
+
+- onPause()中需要释放系统资源，如Camera、Sensor、receivers
+- 如果长时间出入Stop形态而且此时系统需要更多的内存时，系统就会回收你的Activity，调用onSaveInstanceState()方法，在重新创建时调用onRestoreInstanceState()。View如果需要记忆，也需要复写onSaveInstanceState()方法
+- Android任务栈被称为一个Task，一个Task中的Activity可以来自不同的App，同一个App的Activity也可能不在一个Task中
+- 不同Task栈之间默认不能传递数据，只能由Intent传递。比如调用startActivityForResult启动一个ingleInstance模式的Activity，则会立即返回Activity.RESULT_CANCELED
+- 四种启动模式
+  - standard
+  - singleTop
+    - 会调用onNewIntent
+  - singleTask
+    - 检测当前栈中是否存在需要启动的Activity，清理栈顶直至此Activity位于栈顶
+  - singleInstance
+    - 会出现在一个新的任务栈中，且此任务栈中只存在这一个Activity
+    - 如果应用A在任务栈中用此模式创建了ActivityC，应用B也要激活ActivityC，则不需要创建，两个应用共享改Activity实例
+    - 此模式用于需要与程序分离的界面，如在SetupWizard中调用紧急呼叫，就是使用这种启动模式
+- IntentFlag启动模式
+  - FLAG_ACTIVITY_NEW_TASK
+    - Service中创建新的Activity栈必须使用此方法
+  - FLAG_ACTIVITY_SINGLE_TOP
+    - singleTop
+  - FLAG_ACTIVITY_CLEAR_TOP
+    - singleTask
+  - FLAG_ACTIVITY_NO_HISTORY
+    - 当该Activity启动其他Activity后，该Activity就消失了
+- 清空任务栈
+  - clearTaskOnLaunch
+    - 每次返回该Activity，都将该Task之上的所有Activity清除。可以使Task在每次初始化的时候，都只有这一个Activity
+  - finishOnTaskLaunch
+    - 当离开这个Task，用户再返回时，该Activity就会被finish掉
+  - alwaysRetainTaskState
+    - 所在的Task栈将不接受任何清理命令，一直保持Task状态
